@@ -1,8 +1,14 @@
+package stationnement;
+
 public class Piece {
     private int valeur; // en cents
 
     public Piece(int valeur) {
         setValeur(valeur);
+    }
+
+    public int getValeur() {
+        return valeur;
     }
 
     private void setValeur(int valeur) {
