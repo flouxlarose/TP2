@@ -126,6 +126,7 @@ public class GUITP2 {
         boutonRapport.addActionListener(ecouteurControles);
 
         //1. créer objet Borne
+        Borne b = new Borne();
 
     }
 

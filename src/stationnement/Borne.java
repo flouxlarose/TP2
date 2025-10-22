@@ -14,10 +14,12 @@ public class Borne {
 
     public boolean validerPlace(String place) {
         if (place.matches("^G\\d{3}$")) {
-            //  et si le temps match return True
+            // L - V 8h-23h / S 9h-23h / D 13h-18h
+            // tarif horaire (60 min) = 4.25 --- 0.25$ = 3.529411 --- minute près?
         }
         else if (place.matches("^SQ\\d{3}$")) {
-            //  et si temps match return True
+            //  L - V 9h-21h / S 9h-18h
+            // tarif horaire (60 min) = 2.25$ --- 0.25$ = 6.666666 min --- minute près ?
         }
         else {
             return false;
