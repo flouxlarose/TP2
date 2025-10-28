@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -45,7 +46,7 @@ public class GUITP2 {
 
     // variables utiles pour vous
     String place =""; //place de stationnement choisie
-    Borne borne; // borne à créer dans le constructeur
+    Borne b; // borne à créer dans le constructeur
 
     //formatage
     public GUITP2() throws ParseException {
@@ -126,7 +127,7 @@ public class GUITP2 {
         boutonRapport.addActionListener(ecouteurControles);
 
         //1. créer objet Borne
-        Borne b = new Borne();
+        b = new Borne();
 
     }
 
@@ -202,12 +203,32 @@ public class GUITP2 {
     public void boutonNumeroLettre_actionPerformed(String lettreChiffre) {
         // 2. À compléter, afficher la place choisie dans le champMessage
         // à partir de la lettre ou du chiffre cliqué en paramètre
-        place += lettreChiffre;
-        champMessage.setText(place);
+        if (b.getTransactionCourante() == null) {
+            place += lettreChiffre;
+            champMessage.setText(place);
+        }
+
     }
 
     private void boutonEntree_actionPerformed() {
-        //3. à coder
+        if (b.getTransactionCourante() == null){
+            LocalDateTime present = LocalDateTime.now();
+            if (b.validerPlace(place)){
+                b.setPlace(place);
+                if (b.validerHeure(present)){
+                    champMessage.setText("Place Validé");
+                    Transaction t = new Transaction(place);
+                    b.setTransactionCourante(t);
+                }
+                else{
+                    champMessage.setText("Heure Non Tarifée");
+                }
+            }
+            else {
+                champMessage.setText("Place Invalide... Réessayer");
+            }
+        }
+
     }
 
     private void bouton25_actionPerformed() {

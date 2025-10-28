@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 public class Transaction {
     private int cout;
     private String paiement;
-    private int stationnement;
+    private String stationnement;
     private LocalDateTime heureDebut;
     private LocalDateTime heureFin;
 
-    public Transaction(int stationnement){
+    public Transaction(String stationnement){
         this.stationnement = stationnement;
     }
 
@@ -29,11 +29,11 @@ public class Transaction {
         this.paiement = paiement;
     }
 
-    public int getStationnement() {
+    public String getStationnement() {
         return stationnement;
     }
 
-    public void setStationnement(int stationnement) {
+    public void setStationnement(String stationnement) {
         this.stationnement = stationnement;
     }
 
