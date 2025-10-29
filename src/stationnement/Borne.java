@@ -4,7 +4,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 public class Borne {
-    private String place;
     private int banque = 0;         // total en Cents
     private Transaction transactionCourante;
 
@@ -23,7 +22,7 @@ public class Borne {
     public boolean validerHeure(LocalDateTime present){
         // L - V 8h-23h / S 9h-23h / D 13h-18h
         // tarif horaire (60 min) = 4.25 --- 0.25$ = 3.529411 --- minute près?
-        if (place.charAt(0) == 'G'){
+        if (transactionCourante.getStationnement().charAt(0) == 'G'){
             if (present.getDayOfWeek() == DayOfWeek.SATURDAY){
                 return present.getHour() >= 9 && present.getHour() < 23;
             } else if (present.getDayOfWeek() == DayOfWeek.SUNDAY) {
@@ -31,7 +30,7 @@ public class Borne {
             }
             else return present.getHour() >= 8 && present.getHour() < 23;
         }
-        else if (place.charAt(0) == 'S'){
+        else if (transactionCourante.getStationnement().charAt(0) == 'S'){
             //  L - V 9h-21h / S 9h-18h
             // tarif horaire (60 min) = 2.25$ --- 0.25$ = 6.666666 min --- minute près ?
             if (present.getDayOfWeek() == DayOfWeek.SATURDAY){
@@ -48,14 +47,6 @@ public class Borne {
 
     public void ajouterMonaie(Piece monaie) {
         banque += monaie.getValeur();
-    }
-
-    public String getPlace() {
-        return place;
-    }
-
-    public void setPlace(String place) {
-        this.place = place;
     }
 
     public int getBanque() {

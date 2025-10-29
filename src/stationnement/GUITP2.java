@@ -214,7 +214,6 @@ public class GUITP2 {
         if (b.getTransactionCourante() == null){
             LocalDateTime present = LocalDateTime.now();
             if (b.validerPlace(place)){
-                b.setPlace(place);
                 if (b.validerHeure(present)){
                     champMessage.setText("Place Validé");
                     Transaction t = new Transaction(place);
@@ -222,17 +221,23 @@ public class GUITP2 {
                 }
                 else{
                     champMessage.setText("Heure Non Tarifée");
+                    place = "";
                 }
             }
             else {
                 champMessage.setText("Place Invalide... Réessayer");
+                place = "";
             }
         }
 
     }
 
     private void bouton25_actionPerformed() {
-        //4. à coder
+        if (b.getTransactionCourante() != null){
+            Piece piece25 = new Piece(25);
+            b.ajouterMonaie(piece25);
+
+        }
     }
 
     private void bouton100_actionPerformed() {
