@@ -5,6 +5,7 @@ import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -214,7 +215,7 @@ public class GUITP2 {
         if (b.getTransactionCourante() == null){
             LocalDateTime present = LocalDateTime.now();
             if (b.validerPlace(place)){
-                if (b.validerHeure(present)){
+                if (b.validerHeure(present, place)){
                     champMessage.setText("Place Validé");
                     Transaction t = new Transaction(place);
                     b.setTransactionCourante(t);
@@ -233,23 +234,41 @@ public class GUITP2 {
     }
 
     private void bouton25_actionPerformed() {
-        if (b.getTransactionCourante() != null){
+        if (b.getTransactionCourante() != null && !(b.getTransactionCourante().getPaiement().equals("carte"))){
+            b.getTransactionCourante().setPaiement("comptant");
             Piece piece25 = new Piece(25);
             b.ajouterMonaie(piece25);
-
+            DecimalFormat df = new DecimalFormat("0.00$");
+            champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour de " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
         }
     }
 
     private void bouton100_actionPerformed() {
-        //5. à coder
+        if (b.getTransactionCourante() != null && !(b.getTransactionCourante().getPaiement().equals("carte"))){
+            b.getTransactionCourante().setPaiement("comptant");
+            Piece piece100 = new Piece(100);
+            b.ajouterMonaie(piece100);
+            DecimalFormat df = new DecimalFormat("0.00$");
+            champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour de " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
+        }
     }
 
     private void bouton200_actionPerformed() {
-        //6. à coder
+        if (b.getTransactionCourante() != null && !(b.getTransactionCourante().getPaiement().equals("carte"))){
+            b.getTransactionCourante().setPaiement("comptant");
+            Piece piece100 = new Piece(100);
+            b.ajouterMonaie(piece100);
+            DecimalFormat df = new DecimalFormat("0.00$");
+            champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour de " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
+        }
     }
 
     private void boutonValiderDateExp_actionPerformed(){
-        //7. à coder
+        if (b.getTransactionCourante() != null && !(b.getTransactionCourante().getPaiement().equals("comptant"))){
+            String numeroCarte = champNumeroCarte.getText();
+            String dateExp = champDateExp.getText();
+
+        }
     }
 
     private void boutonPlus_actionPerformed() {
