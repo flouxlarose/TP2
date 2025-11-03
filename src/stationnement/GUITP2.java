@@ -212,7 +212,8 @@ public class GUITP2 {
 
     private void boutonEntree_actionPerformed() {
         if (b.getTransactionCourante() == null){
-            LocalDateTime present = LocalDateTime.now();
+//            LocalDateTime present = LocalDateTime.now();
+            LocalDateTime present = LocalDateTime.of(2021, 12, 2, 13, 0); // tester jeudi
             if (b.validerPlace(place)){
                 if (b.validerHeure(present, place)){
                     champMessage.setText("Place Validé");
@@ -282,7 +283,7 @@ public class GUITP2 {
 
     private void boutonPlus_actionPerformed() {
         if (b.getTransactionCourante() != null && b.getTransactionCourante().getPaiement().equals("carte")) {
-            b.getTransactionCourante().ajouterTemps(15.0);
+            b.getTransactionCourante().ajouterMontant(25);
             DecimalFormat df = new DecimalFormat("0.00$");
             champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
         }
@@ -290,7 +291,7 @@ public class GUITP2 {
 
     private void boutonMoins_actionPerformed(){
         if (b.getTransactionCourante() != null && b.getTransactionCourante().getPaiement().equals("carte")) {
-            b.getTransactionCourante().retirerTemps(15.0);
+            b.getTransactionCourante().retirerMontant(25);
             DecimalFormat df = new DecimalFormat("0.00$");
             champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
         }
@@ -320,6 +321,8 @@ public class GUITP2 {
             b.terminerTransaction();
             place = "";
             champMessage.setText("");
+            champDateExp.setText("");
+            champNumeroCarte.setText("");
         }
     }
 
@@ -328,6 +331,8 @@ public class GUITP2 {
             champMessage.setText("Transaction Annulée");
             b.terminerTransaction();
             place = "";
+            champDateExp.setText("");
+            champNumeroCarte.setText("");
         }
     }
 

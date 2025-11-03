@@ -28,17 +28,24 @@ public class Transaction {
     public void ajouterMontant(int montant) {
         if (montant > 0) {
             cout += montant;
-            ajouterTempsSelonMonaie(montant);
+            calculerTemp();
         }
     }
 
-    public void ajouterTempsSelonMonaie(int montant){
-        if (montant > 0 && temps <= MAX_MINUTES){
+    public void retirerMontant(int montant) {
+        if (montant > 0 && montant <= cout) {
+            cout -= montant;
+            calculerTemp();
+        }
+    }
+
+    public void calculerTemp(){
+        if (cout >= 0 && temps <= MAX_MINUTES){
             if (stationnement.charAt(0) == 'G'){
-                temps += (double) (montant * 60) / TARIF_HEURE_G;
+                temps = (double) (cout * 60) / TARIF_HEURE_G;
             }
             else if (stationnement.charAt(0) == 'S'){
-                temps += (double) (montant * 60) / TARIF_HEURE_SQ;
+                temps = (double) (cout * 60) / TARIF_HEURE_SQ;
             }
             if (temps > MAX_MINUTES) {
                 temps = MAX_MINUTES;
@@ -50,28 +57,20 @@ public class Transaction {
         if (min > 0){
             temps += min;
             temps = temps > MAX_MINUTES ? 120.0 : temps;
-            setCout(temps);
+            setCout();
         }
     }
 
-    private void setCout(double min){
-        if (min > 0 && temps <= MAX_MINUTES){
+    private void setCout(){
+        if (temps > 0 && temps <= MAX_MINUTES){
             if (stationnement.charAt(0) == 'G'){
-                cout = (int) Math.round((min * TARIF_HEURE_G) / 60);
+                cout = (int) Math.round((temps * TARIF_HEURE_G) / 60);
             } else if (stationnement.charAt(0) == 'S') {
-                cout = (int) Math.round((min * TARIF_HEURE_SQ) / 60);
+                cout = (int) Math.round((temps * TARIF_HEURE_SQ) / 60);
             }
-        } else if (min == 0 && cout != 0) {
+        } else if (temps == 0 && cout != 0) {
             cout = 0;
 
-        }
-    }
-
-    public void retirerTemps(double min) {
-        if (min > 0){
-            temps -= min;
-            temps = temps < 0 ? 0.0 : temps;
-            setCout(temps);
         }
     }
 
