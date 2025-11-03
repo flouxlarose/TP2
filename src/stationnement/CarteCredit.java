@@ -19,6 +19,12 @@ public class CarteCredit {      // c'est une carte de debit lol
         solde = (r.nextDouble(500.0) + 100.0);   // entre 100 et 500 ?
     }
 
+    public void retirerMontant(double montant) {
+        if (montant <= solde && montant > 0) {
+            solde -= montant;
+        }
+    }
+
     public String getNumero() {
         return numero;
     }

@@ -1,14 +1,16 @@
 package stationnement;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 
 public class Transaction {
     private int cout;
-    private String paiement;
+    private String paiement = "aucun";
     private String stationnement;
     private double temps;
     private LocalDateTime heureDebut;
-    private LocalDateTime heureFin;
+    private CarteCredit carteCredit;
 
     private static int  TARIF_HEURE_G = 425;
     private static int TARIF_HEURE_SQ = 225;
@@ -16,7 +18,7 @@ public class Transaction {
 
     public Transaction(String stationnement){
         this.stationnement = stationnement;
-        setPaiement("aucun");
+        setHeureDebut();
     }
 
     public int getCout() {
@@ -26,15 +28,14 @@ public class Transaction {
     public void ajouterMontant(int montant) {
         if (montant > 0) {
             cout += montant;
-            ajouterTemps(montant);
+            ajouterTempsSelonMonaie(montant);
         }
     }
 
-    public void ajouterTemps(int montant){
+    public void ajouterTempsSelonMonaie(int montant){
         if (montant > 0 && temps <= MAX_MINUTES){
             if (stationnement.charAt(0) == 'G'){
                 temps += (double) (montant * 60) / TARIF_HEURE_G;
-
             }
             else if (stationnement.charAt(0) == 'S'){
                 temps += (double) (montant * 60) / TARIF_HEURE_SQ;
@@ -42,6 +43,35 @@ public class Transaction {
             if (temps > MAX_MINUTES) {
                 temps = MAX_MINUTES;
             }
+        }
+    }
+
+    public void ajouterTemps(double min) {
+        if (min > 0){
+            temps += min;
+            temps = temps > MAX_MINUTES ? 120.0 : temps;
+            setCout(temps);
+        }
+    }
+
+    private void setCout(double min){
+        if (min > 0 && temps <= MAX_MINUTES){
+            if (stationnement.charAt(0) == 'G'){
+                cout = (int) Math.round((min * TARIF_HEURE_G) / 60);
+            } else if (stationnement.charAt(0) == 'S') {
+                cout = (int) Math.round((min * TARIF_HEURE_SQ) / 60);
+            }
+        } else if (min == 0 && cout != 0) {
+            cout = 0;
+
+        }
+    }
+
+    public void retirerTemps(double min) {
+        if (min > 0){
+            temps -= min;
+            temps = temps < 0 ? 0.0 : temps;
+            setCout(temps);
         }
     }
 
@@ -71,15 +101,29 @@ public class Transaction {
         heureDebut = LocalDateTime.now();
     }
 
-    public LocalDateTime getHeureFin() {
-        return heureFin;
-    }
-
-    public void setHeureFin(LocalDateTime heureFin) {
-        this.heureFin = heureFin;
-    }
-
     public double getTemps() {
         return temps;
+    }
+
+    public CarteCredit getCarteCredit() {
+        return carteCredit;
+    }
+
+    public void setCarteCredit(String numero, String exp) {
+        int tempMois = Integer.parseInt(exp.substring(0, 2));
+        int tempAnnee = Integer.parseInt(exp.substring(3, 5)) + 2000;
+        YearMonth expDate = YearMonth.of(tempAnnee, tempMois);
+        carteCredit = new CarteCredit(numero, expDate);
+    }
+
+    public String afficherRecu() {
+        DecimalFormat df = new DecimalFormat("0.00$");
+        String recu = "------------------" + "\n";
+        recu += "type de paiement : " + paiement + "\n";
+        recu += "cout de la transaction : " + (df.format((double) cout / 100)) + "\n";
+        recu += "heure de debut : " + heureDebut + "\n";
+        recu += "heure de fin : " + heureDebut.plusMinutes((long) temps) + "\n";
+        recu += "place : " + stationnement;
+        return recu;
     }
 }

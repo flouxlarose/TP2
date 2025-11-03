@@ -202,9 +202,8 @@ public class GUITP2 {
     }
 
     public void boutonNumeroLettre_actionPerformed(String lettreChiffre) {
-        // 2. À compléter, afficher la place choisie dans le champMessage
-        // à partir de la lettre ou du chiffre cliqué en paramètre
         if (b.getTransactionCourante() == null) {
+            zoneRecu.setText("");
             place += lettreChiffre;
             champMessage.setText(place);
         }
@@ -239,7 +238,7 @@ public class GUITP2 {
             Piece piece25 = new Piece(25);
             b.ajouterMonaie(piece25);
             DecimalFormat df = new DecimalFormat("0.00$");
-            champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour de " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
+            champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
         }
     }
 
@@ -249,7 +248,7 @@ public class GUITP2 {
             Piece piece100 = new Piece(100);
             b.ajouterMonaie(piece100);
             DecimalFormat df = new DecimalFormat("0.00$");
-            champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour de " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
+            champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
         }
     }
 
@@ -259,40 +258,83 @@ public class GUITP2 {
             Piece piece100 = new Piece(100);
             b.ajouterMonaie(piece100);
             DecimalFormat df = new DecimalFormat("0.00$");
-            champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour de " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
+            champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
         }
     }
 
     private void boutonValiderDateExp_actionPerformed(){
         if (b.getTransactionCourante() != null && !(b.getTransactionCourante().getPaiement().equals("comptant"))){
             String numeroCarte = champNumeroCarte.getText();
+            champNumeroCarte.setText(numeroCarte);
             String dateExp = champDateExp.getText();
-
+            if (b.verifNumCredit(numeroCarte) && b.verifExpCredit(dateExp)){
+                b.getTransactionCourante().setPaiement("carte");
+                b.getTransactionCourante().setCarteCredit(numeroCarte, dateExp);
+                champMessage.setText("Carte Validée");
+            }
+            else{
+                champNumeroCarte.setText("");
+                champDateExp.setText("");
+                champMessage.setText("Carte Invalide... Réessayer");
+            }
         }
     }
 
     private void boutonPlus_actionPerformed() {
-        //8. à coder
+        if (b.getTransactionCourante() != null && b.getTransactionCourante().getPaiement().equals("carte")) {
+            b.getTransactionCourante().ajouterTemps(15.0);
+            DecimalFormat df = new DecimalFormat("0.00$");
+            champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
+        }
     }
 
     private void boutonMoins_actionPerformed(){
-        //9. à coder
+        if (b.getTransactionCourante() != null && b.getTransactionCourante().getPaiement().equals("carte")) {
+            b.getTransactionCourante().retirerTemps(15.0);
+            DecimalFormat df = new DecimalFormat("0.00$");
+            champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
+        }
     }
 
     private void boutonMax_actionPerformed() {
-        //10. à coder
+        if (b.getTransactionCourante() != null && b.getTransactionCourante().getPaiement().equals("carte")) {
+            b.getTransactionCourante().ajouterTemps(120.0);
+            DecimalFormat df = new DecimalFormat("0.00$");
+            champMessage.setText("Vous avez " + Math.round(b.getTransactionCourante().getTemps()) + " minutes pour " + (df.format((double) b.getTransactionCourante().getCout() / 100)) + ".");
+        }
     }
 
     private void boutonOK_actionPerformed() {
-        // 11 à coder
+        if (b.getTransactionCourante() != null && (b.getTransactionCourante().getPaiement().equals("comptant") || b.getTransactionCourante().getPaiement().equals("carte"))){
+            if (b.getTransactionCourante().getPaiement().equals("carte")){
+                if (b.getTransactionCourante().getCarteCredit().getSolde() >= (b.getTransactionCourante().getCout()) / 100.0){
+                    b.setBanque(b.getBanque() + b.getTransactionCourante().getCout());
+                    b.getTransactionCourante().getCarteCredit().retirerMontant(b.getTransactionCourante().getCout());
+                }
+                else{
+                    champMessage.setText("Fonds Insuffisants");
+                    return;
+                }
+            }
+            zoneRecu.setText(b.afficherRecu());
+            b.terminerTransaction();
+            place = "";
+            champMessage.setText("");
+        }
     }
 
     private void boutonAnnuler_actionPerformed() {
-       //12 à coder
+        if (b.getTransactionCourante() != null){
+            champMessage.setText("Transaction Annulée");
+            b.terminerTransaction();
+            place = "";
+        }
     }
 
     private void boutonRapport_actionPerformed() {
-        //13 à coder
+        if (b.getTransactionCourante() == null){
+            champMessage.setText(b.afficherRapport());
+        }
     }
 
     public static void main(String[] args) {

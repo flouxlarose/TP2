@@ -1,7 +1,9 @@
 package stationnement;
 
+import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 
 public class Borne {
     private int banque = 0;         // total en Cents
@@ -47,7 +49,13 @@ public class Borne {
     }
 
     public boolean verifNumCredit(String numero) {
-        return numero.matches("\\d*");
+        return numero.matches("^\\d{4} \\d{4} \\d{4} \\d{4}$");
+    }
+    public boolean verifExpCredit(String exp) {
+        int tempMois = Integer.parseInt(exp.substring(0, 2));
+        int tempAnnee = Integer.parseInt(exp.substring(3, 5)) + 2000;
+        YearMonth expDate = YearMonth.of(tempAnnee, tempMois);
+        return expDate.isAfter(YearMonth.now());
     }
 
     public int getBanque() {
@@ -64,5 +72,25 @@ public class Borne {
 
     public void setTransactionCourante(Transaction transactionCourante) {
         this.transactionCourante = transactionCourante;
+    }
+
+    public String afficherRecu() {
+        if (transactionCourante != null){
+            return transactionCourante.afficherRecu();
+        }
+        else {
+            return "Place pas encore valide";
+        }
+
+    }
+    public void terminerTransaction() {
+        transactionCourante = null;
+    }
+
+    public String afficherRapport() {
+        DecimalFormat df = new DecimalFormat("0.00$");
+        String rapport = "Banque totale : " + (df.format((double) banque / 100));
+        banque = 0;
+        return rapport;
     }
 }
